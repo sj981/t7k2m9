@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Track">
+<meta name="theme-color" content="#faf7f2">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAFGklEQVR4nO3ca1LcRgCF0YbKvpw12MtwlhOWEdYQVub8SCA8NKBHS/245/x0uWCqfD+1xoi5Kx369vP7r9avgfqeHh7vWr+G95q/IGPP1jqKJt/c6FnSIoZLv6Hhs8aVIZz+jYyeI86O4bQvbvjUdFYI92d8UeOntrM2VbUqw+cKNU+DaieA8XOVmlurEoDxc7Vamzt0lBg+PThyS7T7BDB+enFki7sCMH56s3eTmwMwfnq1Z5ubAjB+erd1o6sDMH5GsWWrp/wkGEaxKgBXf0azdrNfBmD8jGrNdj8NwPgZ3Vcb9h6AaDcDcPVnFp9teTEA42c2tzbtFohoHwJw9WdWS9t2AhBNAER7E4DbH2b3fuNOAKK9BODqT4rXW3cCEE0ARLsvxe0PeZ437wQgmgCIJgCiCYBod94Ak8wJQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANF+a/0C6Nvff/714c9+/+NHg1dyDp8Mx6Kl4b83Qwhugfhgzfi3/L2eCYA3to569AgEQDQB8GLv1XzkU0AAlFLGHvERAiB2/KUIIF7y+EsRQLT08ZcigFg1xz/yD8QEEMiV/38CCFN7/CNf/UsRAAeMPv5SPA0apdbVf4bhP3MChDD+ZQIIYPy3CWByxv85AUzM+L8mgEkZ/zoCmJDxryeAyRj/NgKYiEccthPAJDzcto8AJmD8+wlgcMZ/jAAGZvzHCWBQxl/HlE+Dzv55lsZfz1SfDZrweZbGX9c0t0AJn2dp/PVNEUDC51ka/zmmCID1jP+t4QNI+DxLz/ecZ/gAjhghAuM/V3QApfQdgfGfLz6AUvqMwPivIYD/9BSB8V9n+ABq/iP3EIHxX2v4AGprGYHxX2+KAGr/g7eIwPjbmCKAUsaOoIdbr1RTPQz3bKTHBkZ6rTOa5gR4bZQ3xsbf3pQBlNJ/BMbfh2kDKKXfCIy/H1MHUEp/ERh/X6YPoJR+IjD+/kQEUEr7CIy/TzEBlNIuAuPvV1QApVwfgfH3LS6AUtrfDu1h/OeIDKCUayLwfE//YgMo5dwIjH8M0QGUck4Exj+OKR+G26O3JzKN/xrxJ8CzngbX02uZnQBe6WF4PbyGJAJ4p+UAjf96AljQYojG34YAbjDIDAL4xFURiK0dAXzh7HEaf1sCWOGskRp/ewJYqfZYjb8PAtig1miNvx8C2OjoeI2/LwLYYe+Ijb8/AiCaAHbaejV39e+TAA5YO2rj75ffB6hk6fcJDL9/AiCaWyCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiHb/9PB41/pFQAtPD493TgCiCYBoAiCaAIh2X8q/bwZavxC40vPmnQBEEwDRXgJwG0SK11t3AhDtTQBOAWb3fuNOAKIJgGgfAnAbxKyWtu0EINpiAE4BZnNr0zdPABEwi8+27BaIaJ8G4BRgdF9t+MsTQASMas12V90CiYDRrN2s9wBEWx2AU4BRbNnqphNABPRu60Y33wKJgF7t2eau9wAioDd7N7n7TbAI6MWRLVYZ8bef33/V+DqwRY2LcJX/BnUacLVam6v2cwARcJWaWztltG6JOMMZF9lTfhLsNKC2szZ1+lCdBhxx9sX00iu1GFjjyjuIJrcqQmBJi1vn5vfqYsjW+v1i8wCWiGJOrce+5B89mtxh6mSbEQAAAABJRU5ErkJggg==">
+<title>Track</title>
+<style>
+:root{
+ --bg:#faf7f2;--card:#fff;--ink:#201d18;--mut:#867d72;--line:#ece5db;--soft:#f4efe7;
+ --grn:#3f6b52;--grns:#e9f0eb;--wrm:#b0603a;--wrms:#f8ece5;--blu:#3c5a78;--blus:#e8eef4;
+ --sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px);
+}
+@media(prefers-color-scheme:dark){:root{
+ --bg:#131110;--card:#1e1b18;--ink:#f3eee6;--mut:#9c9287;--line:#2f2922;--soft:#262119;
+ --grn:#86baa0;--grns:#1e2b24;--wrm:#df9a74;--wrms:#2f2019;--blu:#93b4d2;--blus:#1b232c;}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+ font:16px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+ -webkit-font-smoothing:antialiased;padding-bottom:calc(76px + var(--sb))}
+.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:calc(var(--st) + 14px) 18px 10px;border-bottom:1px solid var(--line)}
+.top h1{margin:0;font-size:25px;font-weight:700;letter-spacing:-.025em}
+.mt{display:flex;justify-content:space-between;align-items:center;margin-top:4px;gap:10px}
+.mt span{font-size:13px;color:var(--mut)}
+.pill{font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:4px 10px;border-radius:20px;background:var(--wrms);color:var(--wrm);white-space:nowrap}
+.days{display:flex;gap:5px;padding:11px 14px 3px;max-width:660px;margin:0 auto}
+.d{flex:1;text-align:center;padding:7px 0;border-radius:11px;font-size:11px;font-weight:650;
+ color:var(--mut);background:var(--card);border:1px solid var(--line)}
+.d.on{background:var(--grn);border-color:var(--grn);color:var(--bg)}
+.d b{display:block;font-size:14px;margin-top:1px}
+main{padding:8px 14px 24px;max-width:660px;margin:0 auto}
+.c{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 17px;margin-bottom:12px}
+.c h2{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut);margin:0 0 12px;font-weight:750}
+.it{display:flex;align-items:flex-start;gap:12px;padding:9px 0;min-height:42px}
+.bx{flex:none;width:23px;height:23px;margin-top:1px;border:2px solid var(--line);border-radius:7px;position:relative;transition:.15s}
+.it.on .bx{background:var(--grn);border-color:var(--grn)}
+.it.on .bx::after{content:"";position:absolute;left:7px;top:3px;width:5px;height:10px;border:solid var(--card);border-width:0 2.5px 2.5px 0;transform:rotate(43deg)}
+.ic{flex:none;width:25px;text-align:center;font-size:18px;line-height:1.3;margin-top:1px}
+.lb{flex:1;font-size:15.5px}
+.lb small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px;line-height:1.45}
+.it.on .lb>b{color:var(--mut);text-decoration:line-through;text-decoration-thickness:1.5px;font-weight:400}
+.lb b{font-weight:500}
+.tg{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:20px;background:var(--blus);color:var(--blu);font-weight:750;align-self:center;flex:none}
+.tg.w{background:var(--wrms);color:var(--wrm)}
+.tiers{display:flex;gap:6px;margin-bottom:14px}
+.tr{flex:1;text-align:center;padding:9px 4px;border-radius:11px;border:1.5px solid var(--line);font-size:12.5px;font-weight:650;color:var(--mut)}
+.tr.on{border-color:var(--grn);background:var(--grns);color:var(--grn)}
+.sess{font-size:15px;line-height:1.6;background:var(--soft);border-radius:12px;padding:14px 15px}
+.sess .h{font-size:16.5px;font-weight:680;margin-bottom:7px;letter-spacing:-.01em}
+.glass{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;justify-items:center}
+.g{width:100%;max-width:44px;aspect-ratio:1/1.1;display:block;overflow:visible}
+.g path{fill:none;stroke:var(--line);stroke-width:1.5;transition:fill .18s,stroke .18s}
+.g.on path{fill:var(--grns);stroke:var(--grn)}
+.g.on{filter:drop-shadow(0 1px 2px rgba(63,107,82,.18))}
+.tot{margin-top:11px;font-size:13.5px;color:var(--mut)}
+.tot b{color:var(--ink);font-weight:700}
+input,textarea,select{width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
+ border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin-top:9px;resize:vertical;-webkit-appearance:none}
+input:focus,textarea:focus{outline:none;border-color:var(--grn)}
+.tip{background:var(--wrms);border-radius:12px;padding:13px 15px;margin-top:11px;font-size:14.5px;line-height:1.5}
+.tip b.h{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--wrm);margin-bottom:6px;font-weight:750}
+.tip .a{color:var(--mut);font-size:13px;margin-top:7px}
+.warn{background:var(--blus);border-radius:12px;padding:13px 15px;font-size:14px;line-height:1.55;margin-top:11px}
+.warn b.h{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--blu);margin-bottom:6px;font-weight:750}
+.r{display:flex;gap:10px;padding:7px 0;font-size:14.5px;line-height:1.5;align-items:flex-start}
+.r i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--grn);margin-top:8px}
+.q{display:flex;justify-content:space-between;gap:12px;padding:10px 0;font-size:14.5px;border-bottom:1px solid var(--line);align-items:baseline}
+.q:last-child{border:0}
+.q .qi{margin-right:7px}
+.q em{font-style:normal;font-size:12px;color:var(--mut);white-space:nowrap;flex:none}
+.q.on{color:var(--mut)}
+.ph{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}
+.ph:last-child{border:0}
+.ph .n{flex:none;width:30px;height:30px;border-radius:9px;background:var(--soft);color:var(--mut);
+ display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:750}
+.ph.now .n{background:var(--grn);color:var(--card)}
+.ph .t{font-size:15px;font-weight:620}
+.ph .s{font-size:12.5px;color:var(--mut);margin-top:2px;line-height:1.45}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.grid2 input{margin-top:0}
+.lbl{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:5px;display:block}
+.bar{height:7px;border-radius:20px;background:var(--soft);overflow:hidden;margin-top:7px}
+.bar div{height:100%;background:var(--grn);border-radius:20px;transition:.3s}
+button{font:inherit;font-size:13.5px;font-weight:600;padding:10px 16px;border-radius:11px;
+ border:1px solid var(--line);background:var(--card);color:var(--mut);margin-top:10px;margin-right:7px}
+button.p{background:var(--grn);border-color:var(--grn);color:var(--card)}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;
+ background:color-mix(in srgb,var(--card) 90%,transparent);
+ backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+ border-top:1px solid var(--line);padding-bottom:var(--sb)}
+nav div{flex:1;text-align:center;padding:10px 0 8px;font-size:10.5px;font-weight:650;color:var(--mut)}
+nav div.on{color:var(--grn)}
+nav div s{display:block;font-size:17px;text-decoration:none;margin-bottom:2px;line-height:1}
+.note{font-size:12.5px;color:var(--mut);line-height:1.55}
+#gate{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;
+ align-items:center;justify-content:center;padding:30px;text-align:center}
+#gate .mk{width:70px;height:70px;border-radius:21px;background:var(--grn);display:flex;
+ align-items:center;justify-content:center;margin-bottom:20px;font-size:34px}
+#gate h3{margin:0 0 6px;font-size:20px;font-weight:680;letter-spacing:-.02em}
+#gate p{margin:0 0 22px;font-size:14px;color:var(--mut);max-width:250px;line-height:1.5}
+#gate input{width:170px;text-align:center;font-size:26px;letter-spacing:.35em;padding:14px 10px;font-weight:600;margin:0}
+#gate .err{color:var(--wrm);font-size:13px;height:18px;margin-top:12px;font-weight:600}
+
+</style>
+</head>
+<body>
+
+
+<div id="gate">
+  <div class="mk">🌱</div>
+  <h3>Track</h3>
+  <p>Enter your passcode.</p>
+  <input id="pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off">
+  <div class="err" id="perr"></div>
+</div>
+
+<div class="top">
+  <h1 id="ttl">Today</h1>
+  <div class="mt"><span id="sub"></span><span class="pill" id="cd"></span></div>
+</div>
+<div class="days" id="days"></div>
+<main id="main"></main>
+<nav id="nav"></nav>
+
+<script>
+/* ==========================================================
+   PASSCODE - change these digits and re-upload to change it.
+   ========================================================== */
+var PIN = "3333";
+/* ========================================================== */
+(function(){
+  var g=document.getElementById("gate"),i=document.getElementById("pin"),e=document.getElementById("perr");
+  var ok=false; try{ok=localStorage.getItem("trk-ok")==="1"}catch(x){}
+  if(ok){g.style.display="none"}else{setTimeout(function(){i.focus()},350)}
+  i.addEventListener("input",function(){
+    if(i.value.length>=PIN.length){
+      if(i.value===PIN){g.style.display="none";try{localStorage.setItem("trk-ok","1")}catch(x){}}
+      else{e.textContent="Not that one.";i.value=""}
+    }else{e.textContent=""}
+  });
+})();
+</script>
+
+<script>
+/* ---------- constants ---------- */
+var START=new Date(2026,7,14), END=new Date(2026,11,20);
+var DS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
+    FL=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+var TABS=[["today","Today","🗓️"],["plan","Plan","🧭"],["food","Food","🍽️"],["law","Law","⚖️"],["me","Me","📈"]];
+
+var PHASES=[
+ {n:1,from:new Date(2026,7,14),to:new Date(2026,8,10),t:"Rebuild the base",
+  s:"Lower body only for loading. Chase showing up six days a week — not the scale.",
+  mod:"Bodyweight throughout. Nothing on the elbow."},
+ {n:2,from:new Date(2026,8,11),to:new Date(2026,10,5),t:"Add load",
+  s:"Dumbbells enter the leg work. Upper body only once your physio clears it — start at 1–2 kg and let the first week feel too easy.",
+  mod:"Add weight: goblet squats (elbows bent and supported), dumbbell deadlifts, weighted step-ups, walking lunges."},
+ {n:3,from:new Date(2026,10,6),to:new Date(2026,11,20),t:"Build strength",
+  s:"Where 'strong' actually happens. 8–12 reps with a weight that is genuinely hard by the last two — this matters more than any other variable.",
+  mod:"Upper/lower split. Split squats, Romanian deadlifts, real rows. Protein up to 95–100 g."}
+];
+
+var CYCLE={
+ 1:{f:"Legs A · Quads",i:"🦵",c:"legs",
+  B:"12 min · 2 rounds — 12 squats · 8 reverse lunges each side (hold a wall) · 30s wall sit · 15 calf raises",
+  G:"25 min · 3 rounds — 5 min warm-up, then 15 squats · 10 reverse lunges each side · 8 step-ups each side · 40s wall sit · 20 calf raises · 5 min stretch. Plus a 15 min walk later.",
+  E:"45 min · 4 rounds — all of Good ×4 with a slow 3-second lowering on every squat, + 8 min stairs · 8,000 steps"},
+ 2:{f:"Core + Walk",i:"🌀",c:"core",
+  B:"10 min — dead bug ×10 each side · bird dog ×8 each side (fist on the floor, not an open palm) · 20 lying leg raises",
+  G:"25 min · 3 rounds — dead bug · bird dog · forearm side plank on the good side 20s · lying leg raises · glute bridge march. Then a 20 min walk.",
+  E:"40 min — 4 rounds of Good + 30 min brisk walk · 10,000 steps"},
+ 3:{f:"Legs B · Glutes",i:"🦵",c:"legs",
+  B:"12 min · 2 rounds — 12 sumo squats · 12 glute bridges · 10 standing side leg raises each side · 30s wall sit",
+  G:"25 min · 3 rounds — 15 sumo squats · 10 step-ups on a low stool each side · 12 single-leg glute bridges each side · 15 standing side leg raises · 40s wall sit · 5 min stretch",
+  E:"45 min · 4 rounds of Good, 3-second lowering throughout, + hip thrusts on the sofa edge ×15 · 8,000 steps"},
+ 4:{f:"Mobility + Walk",i:"🧘",c:"mob",
+  B:"10 min full-body stretch. Elbow physio.",
+  G:"Physio + 15 min stretch and hip mobility + 30 min brisk walk",
+  E:"Physio + 20 min mobility + 45 min walk with a hill or stairs section · 12,000 steps"},
+ 5:{f:"Legs C · Full",i:"🦵",c:"legs",
+  B:"12 min · 2 rounds — 10 squat-to-chair · 12 hip thrusts on the sofa edge · 10 glute bridge march each side",
+  G:"25 min · 3 rounds — squat to chair · hip thrusts · dead bug · glute bridge march · forearm plank if pain-free · 5 min stretch",
+  E:"45 min · 4 rounds of Good + 8 min stairs · 10,000 steps"},
+ 6:{f:"Walk / Cycle",i:"🚶",c:"walk",
+  B:"20 min walk. Anywhere, any pace.",
+  G:"40 min brisk walk or cycling + 5 min leg stretch",
+  E:"55 min with a hill or stairs section · 12,000 steps · 10 min stretch"},
+ 0:{f:"Rest",i:"😴",c:"rest",
+  B:"Elbow physio. That's the whole thing.",
+  G:"Physio + 10 min gentle full-body stretch",
+  E:"Physio + 20 min stretch + 15 min easy walk. No training — legs are built on rest days."}
+};
+
+var MEDS=[
+ {k:"megaferon",i:"🩸",n:"Megaferon",s:"Empty stomach · ~11 am or bedtime · nothing dairy, tea or coffee for an hour"},
+ {k:"me12",i:"💊",n:"ME12",s:"After your first meal · no restrictions"},
+ {k:"creatine",i:"🥄",n:"Creatine",s:"3–5 g · any time · stir into water and drink it all"},
+ {k:"lumia",i:"☀️",n:"Lumia 60K",s:"Saturdays only · with dinner, your fattiest meal",sat:true}];
+
+var SNACK={
+ 1:["Roasted makhana in ghee, black pepper, rock salt",4,"Five minutes in a pan. Light enough that dinner still lands."],
+ 2:["Sprouted moong chaat — onion, tomato, chilli, lemon",12,"No cooking, real protein, the lemon does the work."],
+ 3:["Paneer tikka bites, seared dry, chaat masala, mint chutney",14,"If dinner is paneer too, swap to masala corn with lime and chilli."],
+ 4:["Steamed dhokla with mustard and curry-leaf tempering",10,"Besan, so genuinely high protein. A batch holds two days."],
+ 5:["Peanut and roasted chana chaat with raw onion",12,"The portable one — it works in chambers."],
+ 6:["Besan chilla, thin, rolled around grated paneer",16,"The closest thing to a proper snack that still counts as protein."],
+ 0:["Masala chaas with roasted jeera, and roasted almonds",8,"Deliberately light — Sunday dinner runs bigger."]};
+
+var BRUNCH=[
+ ["3-egg omelette (2 whole + 1 white) with spinach and onion + 2 multigrain toast + curd",28],
+ ["2 besan chilla stuffed with paneer + big salad + a glass of milk",26],
+ ["Paneer bhurji (150 g) + 2 roti + salad with lemon",32],
+ ["2 roti + a katori of rajma or chana + a katori of curd + big salad",24],
+ ["Oats (50 g) in milk + peanut butter + banana + 2 boiled eggs",30],
+ ["3 moong dal chilla + hung curd bowl + fruit",26],
+ ["3 idli + sambar + 2 boiled eggs + chutney",22]];
+
+var DINNER=[
+ ["150 g paneer sabzi + large bowl sautéed veg + big salad",28],
+ ["125 g paneer tikka + salad with lemon + 1 roti",24],
+ ["150 g tofu or soya sabzi + big salad",26],
+ ["Paneer in a light gravy + clear veg soup + salad",22]];
+
+var TIER={B:["Basic",65],G:["Good",85],E:["Excellent",100]};
+
+/* ---------- state ---------- */
+var tab="today", view=new Date().getDay(), S={}, M={};
+function ld(){try{var r=localStorage.getItem("trk2");if(r){var o=JSON.parse(r);S=o.S||{};M=o.M||{}}}catch(e){}}
+function sv(){try{localStorage.setItem("trk2",JSON.stringify({S:S,M:M}))}catch(e){}}
+function st(){S[view]=S[view]||{w:0,t:"G"};return S[view]}
+function phase(){var n=new Date();for(var i=0;i<PHASES.length;i++){if(n<=PHASES[i].to)return PHASES[i]}return PHASES[2]}
+function daysLeft(){return Math.max(0,Math.ceil((END-new Date())/864e5))}
+
+/* ---------- rows ---------- */
+function row(o){var s=st(),on=s[o.k]?" on":"";
+ return '<div class="it'+on+'" onclick="tk(\''+o.k+'\')"><div class="bx"></div>'+
+ (o.i?'<div class="ic">'+o.i+'</div>':'')+
+ '<div class="lb"><b>'+o.n+'</b>'+(o.s?'<small>'+o.s+'</small>':'')+'</div>'+
+ (o.tg?'<span class="tg'+(o.tgw?' w':'')+'">'+o.tg+'</span>':'')+'</div>'}
+
+function todayItems(){
+ var a=[{k:"train",i:"🏋️",n:"Training session",s:"Whichever tier you picked"},
+        {k:"physio",i:"🩹",n:"Elbow physio",s:"Every day, rest days included"},
+        {k:"brunch",i:"🍳",n:"Brunch",s:"Morning meal and lunch as one"},
+        {k:"fruit",i:"🍎",n:"Fruit",s:"One a day — guava, apple, orange, papaya"},
+        {k:"snack",i:"🥣",n:"Evening snack",s:SNACK[view][0]},
+        {k:"dinner",i:"🥗",n:"Dinner",s:"Salad and paneer · finish by 8:30 pm"},
+        {k:"protein",i:"🥤",n:"Protein powder"},
+        {k:"prot_t",i:"🎯",n:"Protein target hit",s:TIER[st().t][1]+" g today"}];
+ var n=[{k:"face",i:"🧴",n:"Night face routine",s:"Cleanse · treat · moisturise"},
+        {k:"feet",i:"🦶",n:"Foot moisturiser"}];
+ var w=[];
+ if(view>=1&&view<=5){
+  w.push({k:"court",i:"⚖️",n:"Hear a courtroom — 15 min",s:"Log which court on the Law tab",tg:"weekday"});
+  w.push({k:"read",i:"📖",n:"Advocacy reading",s:"Arrives at 7 am",tg:"weekday"});
+ }
+ if(view===0||view===6){
+  w.push({k:"saladprep",i:"🥡",n:"Prep the salad boxes",s:"Enough for the week's dinners — chop, box, done",tg:"weekend",tgw:1});
+  w.push({k:"oil",i:"💆",n:"Hair oiling",s:"Either weekend day",tg:"weekend",tgw:1});
+  w.push({k:"drill",i:"🗣️",n:"Advocacy drill — 45 min",s:"Argue blind, eight questions, score",tg:"weekend",tgw:1});
+  w.push({k:"wrev",i:"📝",n:"Review the week",tg:"weekend",tgw:1});
+ }
+ var m=[{k:"judgment",i:"📜",n:"Read a judgment",s:"One a day, however short"},
+        {k:"book",i:"📚",n:"Read a book",s:"Even ten pages counts"}];
+ return {a:a,n:n,w:w,m:m};
+}
+
+/* ---------- render ---------- */
+function render(){
+ var s=st(), p=phase(), td=new Date().getDay(), I=todayItems();
+ document.getElementById("ttl").textContent={today:"Today",plan:"The plan",food:"Food",law:"Law",me:"Me"}[tab];
+ document.getElementById("sub").textContent=FL[view]+(view===td?" · today":"")+" · Phase "+p.n;
+ document.getElementById("cd").textContent=daysLeft()+" days to 20 Dec";
+ document.getElementById("days").innerHTML=DS.map(function(d,i){
+  var o=S[i]||{},c=0;for(var k in o){if(k!=="w"&&k!=="t"&&o[k]===true)c++}
+  return '<div class="d'+(i===view?" on":"")+'" onclick="gd('+i+')">'+d+'<b>'+(c||"·")+'</b></div>'}).join("");
+
+ var h="";
+
+ if(tab==="today"){
+  var cy=CYCLE[view];
+  h+='<div class="c"><h2>'+cy.i+' '+cy.f+'</h2><div class="tiers">'+
+   ["B","G","E"].map(function(t){return '<div class="tr'+(s.t===t?" on":"")+'" onclick="gt2(\''+t+'\')">'+TIER[t][0]+'</div>'}).join("")+
+   '</div><div class="sess"><div class="h">'+cy.i+' '+cy.f+'</div>'+cy[s.t]+
+   (cy.c!=="rest"&&p.n>1?'<div style="margin-top:9px;color:var(--mut);font-size:13.5px">Phase '+p.n+' — '+p.mod+'</div>':'')+
+   '</div></div>';
+
+  h+='<div class="c"><h2>💧 Water · 200 ml a drop</h2><div class="glass">'+
+   Array.from({length:15},function(_,i){return '<svg class="g'+(i<s.w?" on":"")+'" viewBox="0 0 24 26" onclick="pw('+i+')">'+
+    '<path d="M12 2.4C12 2.4 4.6 10.8 4.6 15.6a7.4 7.4 0 0 0 14.8 0C19.4 10.8 12 2.4 12 2.4Z"/></svg>'}).join("")+
+   '</div><div class="tot"><b>'+(s.w*200)+' ml</b> of 3000 · '+(15-s.w)+' to go</div>'+
+   '<div class="bar"><div style="width:'+Math.round(s.w/15*100)+'%"></div></div></div>';
+
+  h+='<div class="c"><h2>💊 Medicines</h2>'+MEDS.filter(function(m){return !m.sat||view===6})
+      .map(function(m){return row({k:m.k,i:m.i,n:m.n,s:m.s,tg:m.sat?"saturday":"",tgw:1})}).join("")+'</div>';
+
+  h+='<div class="c"><h2>✅ The day</h2>'+I.a.map(row).join("")+'</div>';
+  if(I.w.length) h+='<div class="c"><h2>'+(view===0||view===6?"🌤️ Weekend":"🎙️ Practice")+'</h2>'+I.w.map(row).join("")+'</div>';
+  h+='<div class="c"><h2>🧠 Mind</h2>'+I.m.map(row).join("")+'</div>';
+  h+='<div class="c"><h2>🌙 Night</h2>'+I.n.map(row).join("")+'</div>';
+ }
+
+ if(tab==="plan"){
+  h+='<div class="c"><h2>🧭 Three phases to 20 December</h2>'+PHASES.map(function(x){
+   return '<div class="ph'+(x.n===p.n?" now":"")+'"><div class="n">'+x.n+'</div><div>'+
+   '<div class="t">'+x.t+'</div><div class="s">'+fmt(x.from)+' – '+fmt(x.to)+' · '+x.s+'</div></div></div>'}).join("")+
+   '<div class="note" style="margin-top:12px">After 20 December the whole thing gets reviewed properly — bloods re-tested, measurements compared, and the plan rewritten from what actually happened rather than carried on out of habit.</div></div>';
+
+  h+='<div class="c"><h2>📆 The training week</h2>'+[1,2,3,4,5,6,0].map(function(i){
+   return '<div class="q"><span><span class="qi">'+CYCLE[i].i+'</span>'+CYCLE[i].f+'</span><em>'+FL[i].slice(0,3)+'</em></div>'}).join("")+'</div>';
+
+  h+='<div class="c"><h2>🩹 The elbow</h2>'+
+   '<div class="warn"><b class="h">This overrides the page</b>Your physiotherapist\'s instructions come first. If anything here conflicts with what they have told you, follow them, not this.</div>'+
+   '<div style="margin-top:13px"><div class="lbl">Avoid until cleared</div>'+
+   '<div class="note">Push-ups and any plank on your hands · hanging or dead hangs · loaded biceps curls and triceps extensions · anything that fully straightens the elbow under weight · pushing up from the floor with that arm · locking the elbow out.</div></div>'+
+   '<div style="margin-top:13px"><div class="lbl">Fine to do</div>'+
+   '<div class="note">All leg and glute work · forearm planks and side planks on the good side · walking, cycling, stairs · core work lying down · light shoulder movement with the elbow bent and supported.</div></div>'+
+   '<div class="tip" style="margin-top:13px"><b class="h">Pain is the signal</b>Mild muscle soreness the next day is normal and good. Sharp pain, joint pain, or swelling in the elbow means stop that movement and tell your physio.</div></div>';
+ }
+
+ if(tab==="food"){
+  var sn=SNACK[view];
+  h+='<div class="c"><h2>🍽️ How the day eats now</h2>'+
+   '<div class="r"><i></i><div><b>Brunch</b> — morning meal and lunch as one. Make it the biggest thing you eat.</div></div>'+
+   '<div class="r"><i></i><div><b>Evening snack</b> — real, not a holdover. It is what stops dinner becoming a second lunch.</div></div>'+
+   '<div class="r"><i></i><div><b>Dinner</b> — salad and paneer, finished by 8:30 pm. Built from the boxes you prepped at the weekend, so a late evening never becomes a reason to skip it.</div></div>'+
+   '<div class="r"><i></i><div><b>Fruit</b> — one a day. Not within an hour of Megaferon if it is citrus-heavy on an empty stomach.</div></div>'+
+   '<div class="r"><i></i><div><b>Protein powder</b> — once daily. On three meals instead of five it is carrying more than it looks.</div></div>'+
+   '<div class="tip"><b class="h">Fewer meals, same target</b>Three eating slots have to carry '+TIER[s.t][1]+' g of protein today. That only works if each one is protein-first — the salad and the veg are built around the paneer, not the other way round.</div></div>';
+
+  h+='<div class="c"><h2>🥣 Evening snack · '+FL[view]+'</h2><div class="sess"><div class="h">'+sn[0]+'</div>'+
+   '<span style="color:var(--mut)">≈'+sn[1]+' g protein</span><div style="margin-top:7px;color:var(--mut);font-size:13.5px">'+sn[2]+'</div></div>'+
+   '<div style="margin-top:13px"><div class="lbl">The rotation</div>'+
+   [1,2,3,4,5,6,0].map(function(i){return '<div class="q"><span>'+SNACK[i][0]+'</span><em>'+DS[i]+' · '+SNACK[i][1]+'g</em></div>'}).join("")+'</div></div>';
+
+  h+='<div class="c"><h2>🍳 Brunch options</h2>'+BRUNCH.map(function(x){
+   return '<div class="q"><span>'+x[0]+'</span><em>'+x[1]+'g</em></div>'}).join("")+'</div>';
+  h+='<div class="c"><h2>🥗 Dinner options</h2>'+DINNER.map(function(x){
+   return '<div class="q"><span>'+x[0]+'</span><em>'+x[1]+'g</em></div>'}).join("")+
+   '<div class="note" style="margin-top:12px">No sugar in tea or coffee — that one is settled, so it is not tracked. No tea or coffee within an hour of Megaferon.</div></div>';
+ }
+
+ if(tab==="law"){
+  h+='<div class="c"><h2>⚖️ Courtroom listening</h2>'+
+   '<div class="note">Fifteen minutes, any bench, weekdays. The cheapest advocacy education there is — and the only one that shows you what fails.</div>'+
+   '<input placeholder="Which court, which matter?" value="'+(s.ct||"")+'" oninput="fl(\'ct\',this.value)">'+
+   '<textarea rows="2" placeholder="One line — what the Bench did that you would copy, or avoid">'+(s.cn||"")+'</textarea></div>';
+
+  h+='<div class="c"><h2>The week\'s shape</h2>'+
+   '<div class="q"><span>Reading — statute, then prior authority</span><em>Mon–Thu 7 am</em></div>'+
+   '<div class="q"><span>Write the three prep items</span><em>Fri</em></div>'+
+   '<div class="q"><span>The drill — argue blind, 45 min</span><em>Sat / Sun</em></div>'+
+   '<div class="tip"><b class="h">The three prep items</b>The opening proposition, in one sentence. Three concessions you will give, and the one you will not. The three questions you least want asked.'+
+   '<div class="a">Written down, on Friday. Every rubric line that failed in the first session traced back to skipping these.</div></div></div>';
+
+  h+='<div class="c"><h2>📁 Where the drill lives</h2><div class="note">The case queue, the rubric and the running log are in your <b>SCR</b> folder — <b>Advocacy Drill — Protocol.md</b> and <b>Advocacy Log.md</b>. Fourteen cases, one a week, which lands just inside 20 December.</div></div>';
+ }
+
+ if(tab==="me"){
+  var done=0,tot=0;for(var i=0;i<7;i++){var o=S[i]||{};for(var k in o){if(o[k]===true)done++}}
+  h+='<div class="c"><h2>📈 This week</h2><div class="tot"><b>'+done+'</b> things ticked across the week</div>'+
+   '<div class="bar"><div style="width:'+Math.min(100,Math.round(done/70*100))+'%"></div></div>'+
+   '<div class="note" style="margin-top:12px">Day chips at the top show each day\'s count. Tap a day to go back and fill it in.</div></div>';
+
+  h+='<div class="c"><h2>📏 Measurements</h2><div class="grid2">'+
+   ['weight|Weight (kg)','waist|Waist (cm)','hips|Hips (cm)','thigh|Thigh (cm)'].map(function(x){
+    var a=x.split("|");return '<div><span class="lbl">'+a[1]+'</span><input inputmode="decimal" value="'+(M[a[0]]||"")+'" oninput="mm(\''+a[0]+'\',this.value)"></div>'}).join("")+
+   '</div><div class="note" style="margin-top:12px">Once a fortnight, same morning, same conditions. The tape tells you things the scale will not.</div></div>';
+
+  h+='<div class="c"><h2>📝 Week review</h2>'+
+   '<div class="r"><i></i><div>Which rubric line slipped again?</div></div>'+
+   '<div class="r"><i></i><div>What got read, and what did not?</div></div>'+
+   '<div class="r"><i></i><div>How many days hit 3 litres?</div></div>'+
+   '<div class="r"><i></i><div>Did anything go up — a rep, a round, a kilo?</div></div>'+
+   '<textarea rows="4" placeholder="This week, honestly…" oninput="mm(\'rev\',this.value)">'+(M.rev||"")+'</textarea></div>';
+
+  var lb=M.lastbk?Math.floor((new Date()-new Date(M.lastbk))/864e5):null;
+  var warn=(lb===null||lb>14);
+  h+='<div class="c"><h2>💾 Backup</h2>'+
+   '<div class="sess" style="background:'+(warn?'var(--wrms)':'var(--grns)')+';color:'+(warn?'var(--wrm)':'var(--grn)')+';font-weight:600;font-size:14.5px">'+
+   (lb===null?'☁️ Never backed up. Do it now — it takes one tap.':
+    lb===0?'☁️ Backed up today. Nothing to do.':
+    lb>14?'⚠️ Last backed up '+lb+' days ago. Overdue.':'☁️ Last backed up '+lb+' day'+(lb===1?'':'s')+' ago.')+'</div>'+
+   '<button class="p" onclick="bk()">☁️ Back up now</button>'+
+   '<div class="note" style="margin-top:12px">Opens the share sheet — send it to <b>Notes</b> or <b>Files</b> and it is safe in iCloud. Everything here lives on this phone only, so this is the only copy that survives a Safari wipe.</div>'+
+   '<textarea rows="3" id="bk" placeholder="To restore: paste a backup here, then tap Restore."></textarea>'+
+   '<button onclick="im()">Restore</button></div>';
+ }
+
+ document.getElementById("main").innerHTML=h;
+ document.getElementById("nav").innerHTML=TABS.map(function(x){
+  return '<div class="'+(x[0]===tab?"on":"")+'" onclick="gt(\''+x[0]+'\')"><s>'+x[2]+'</s>'+x[1]+'</div>'}).join("");
+ sv();
+}
+
+function fmt(d){return d.getDate()+" "+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()]}
+function tk(k){var s=st();s[k]=!s[k];render()}
+function pw(i){var s=st();s.w=(s.w===i+1)?i:i+1;render()}
+function fl(k,v){st()[k]=v;sv()}
+function mm(k,v){M[k]=v;sv()}
+function gd(i){view=i;render()}
+function gt(t){tab=t;window.scrollTo(0,0);render()}
+function gt2(t){st().t=t;render()}
+function bk(){
+ var j=JSON.stringify({S:S,M:M,saved:new Date().toISOString().slice(0,10)});
+ M.lastbk=new Date().toISOString().slice(0,10); sv();
+ var done=function(){render()};
+ if(navigator.share){navigator.share({title:"Track backup",text:j}).then(done,function(){cp(j);done()})}
+ else{cp(j);done()}
+}
+function cp(t){
+ var b=document.getElementById("bk"); if(b){b.value=t}
+ try{navigator.clipboard&&navigator.clipboard.writeText(t)}catch(e){}
+}
+function im(){var b=document.getElementById("bk");try{var o=JSON.parse(b.value);S=o.S||{};M=o.M||{};sv();render()}catch(e){b.value="That does not look like a backup — paste the exported text and try again.";b.style.borderColor="var(--wrm)"}}
+
+ld();render();
+</script>
+</body>
+</html>
