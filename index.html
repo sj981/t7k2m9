@@ -84,6 +84,9 @@ input:focus,textarea:focus{outline:none;border-color:var(--grn)}
 .ph .s{font-size:12.5px;color:var(--mut);margin-top:2px;line-height:1.45}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .grid2 input{margin-top:0}
+.ate{margin-bottom:10px}
+.ate .al{font-size:12px;color:var(--mut);font-weight:650}
+.ate textarea,.ate input{margin-top:5px}
 .lbl{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:5px;display:block}
 .bar{height:7px;border-radius:20px;background:var(--soft);overflow:hidden;margin-top:7px}
 .bar div{height:100%;background:var(--grn);border-radius:20px;transition:.3s}
@@ -301,6 +304,16 @@ function render(){
       .map(function(m){return row({k:m.k,i:m.i,n:m.n,s:m.s,tg:m.sat?"saturday":"",tgw:1})}).join("")+'</div>';
 
   h+='<div class="c"><h2>✅ The day</h2>'+I.a.map(row).join("")+'</div>';
+  h+='<div class="c"><h2>🍽️ What you ate</h2>'+
+   '<div class="ate"><span class="al">🍳 Brunch</span>'+
+   '<textarea rows="2" placeholder="'+BRUNCH[view%BRUNCH.length][0]+'" oninput="fl(\'eb\',this.value)">'+(s.eb||"")+'</textarea></div>'+
+   '<div class="ate"><span class="al">🥣 Evening snack</span>'+
+   '<textarea rows="2" placeholder="'+SNACK[view][0]+'" oninput="fl(\'es\',this.value)">'+(s.es||"")+'</textarea></div>'+
+   '<div class="ate"><span class="al">🥗 Dinner</span>'+
+   '<textarea rows="2" placeholder="'+DINNER[view%DINNER.length][0]+'" oninput="fl(\'ed\',this.value)">'+(s.ed||"")+'</textarea></div>'+
+   '<div class="ate"><span class="al">🎯 Protein today (g)</span>'+
+   '<input inputmode="numeric" placeholder="target '+TIER[s.t][1]+'" value="'+(s.pg||"")+'" oninput="fl(\'pg\',this.value)"></div>'+
+   '<div class="note" style="margin-top:10px">The greyed-out text is a suggestion, not a record — type over it. Blank is fine; an honest blank beats a tidy fiction.</div></div>';
   if(I.w.length) h+='<div class="c"><h2>'+(view===0||view===6?"🌤️ Weekend":"🎙️ Practice")+'</h2>'+I.w.map(row).join("")+'</div>';
   h+='<div class="c"><h2>🧠 Mind</h2>'+I.m.map(row).join("")+'</div>';
   h+='<div class="c"><h2>🌙 Night</h2>'+I.n.map(row).join("")+'</div>';
