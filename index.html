@@ -88,6 +88,9 @@ input:focus,textarea:focus{outline:none;border-color:var(--grn)}
 .ate .al{font-size:12px;color:var(--mut);font-weight:650}
 .ate textarea,.ate input{margin-top:5px}
 .lbl{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:5px;display:block}
+.dots{display:flex;gap:7px}
+.dot{flex:1;aspect-ratio:1;max-width:40px;border-radius:11px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--mut);transition:.18s}
+.dot.on{background:var(--grn);border-color:var(--grn);color:var(--card)}
 .bar{height:7px;border-radius:20px;background:var(--soft);overflow:hidden;margin-top:7px}
 .bar div{height:100%;background:var(--grn);border-radius:20px;transition:.3s}
 button{font:inherit;font-size:13.5px;font-weight:600;padding:10px 16px;border-radius:11px;
@@ -236,7 +239,7 @@ var TIER={B:["Basic",65],G:["Good",85],E:["Excellent",100]};
 var tab="today", view=new Date().getDay(), S={}, M={};
 function ld(){try{var r=localStorage.getItem("trk2");if(r){var o=JSON.parse(r);S=o.S||{};M=o.M||{}}}catch(e){}}
 function sv(){try{localStorage.setItem("trk2",JSON.stringify({S:S,M:M}))}catch(e){}}
-function st(){S[view]=S[view]||{w:0,t:"G"};return S[view]}
+function st(){var o=S[view]=S[view]||{};if(typeof o.w!=="number"||o.w<0||o.w>15)o.w=0;if(!TIER[o.t])o.t="G";return o}
 function phase(){var n=new Date();for(var i=0;i<PHASES.length;i++){if(n<=PHASES[i].to)return PHASES[i]}return PHASES[2]}
 function daysLeft(){return Math.max(0,Math.ceil((END-new Date())/864e5))}
 
@@ -258,7 +261,7 @@ function todayItems(){
         {k:"prot_t",i:"🎯",n:"Protein target hit",s:TIER[st().t][1]+" g today"}];
  var n=[{k:"face",i:"🧴",n:"Night face routine",s:"Cleanse · treat · moisturise"},
         {k:"feet",i:"🦶",n:"Foot moisturiser"}];
- var w=[];
+ var w=[{k:"judgment",i:"📜",n:"Read a judgment",s:"One a day, however short — this is the drill prep",tg:"prep"}];
  if(view>=1&&view<=5){
   w.push({k:"court",i:"⚖️",n:"Hear a courtroom — 15 min",s:"Log which court on the Law tab",tg:"weekday"});
   w.push({k:"read",i:"📖",n:"Advocacy reading",s:"Arrives at 7 am",tg:"weekday"});
@@ -269,8 +272,7 @@ function todayItems(){
   w.push({k:"drill",i:"🗣️",n:"Advocacy drill — 45 min",s:"Argue blind, eight questions, score",tg:"weekend",tgw:1});
   w.push({k:"wrev",i:"📝",n:"Review the week",tg:"weekend",tgw:1});
  }
- var m=[{k:"judgment",i:"📜",n:"Read a judgment",s:"One a day, however short"},
-        {k:"book",i:"📚",n:"Read a book",s:"Even ten pages counts"}];
+ var m=[{k:"book",i:"📚",n:"Read a book",s:"Even ten pages counts"}];
  return {a:a,n:n,w:w,m:m};
 }
 
@@ -314,7 +316,7 @@ function render(){
    '<div class="ate"><span class="al">🎯 Protein today (g)</span>'+
    '<input inputmode="numeric" placeholder="target '+TIER[s.t][1]+'" value="'+(s.pg||"")+'" oninput="fl(\'pg\',this.value)"></div>'+
    '<div class="note" style="margin-top:10px">The greyed-out text is a suggestion, not a record — type over it. Blank is fine; an honest blank beats a tidy fiction.</div></div>';
-  if(I.w.length) h+='<div class="c"><h2>'+(view===0||view===6?"🌤️ Weekend":"🎙️ Practice")+'</h2>'+I.w.map(row).join("")+'</div>';
+  h+='<div class="c"><h2>'+(view===0||view===6?"🌤️ Weekend":"🎙️ Practice")+'</h2>'+I.w.map(row).join("")+'</div>';
   h+='<div class="c"><h2>🧠 Mind</h2>'+I.m.map(row).join("")+'</div>';
   h+='<div class="c"><h2>🌙 Night</h2>'+I.n.map(row).join("")+'</div>';
  }
@@ -360,6 +362,19 @@ function render(){
  }
 
  if(tab==="law"){
+  var ORD=[1,2,3,4,5,6,0], DL=["M","T","W","T","F","S","S"];
+  var jd=ORD.map(function(i){return !!(S[i]&&S[i].judgment)}), jn=jd.filter(Boolean).length;
+  var msg = jn===0 ? "Nothing read yet this week. Saturday will feel it."
+          : jn<3   ? jn+" of 7 read. Prep has started."
+          : jn<5   ? jn+" of 7 read. Prep is happening."
+          : jn<7   ? jn+" of 7 read. You will walk into Saturday ready."
+                   : "All seven read. Nothing left to do but argue.";
+  h+='<div class="c"><h2>📜 Prep for the weekend drill</h2>'+
+   '<div class="dots">'+jd.map(function(on,ix){return '<div class="dot'+(on?" on":"")+'">'+DL[ix]+'</div>'}).join("")+'</div>'+
+   '<div class="bar" style="margin-top:12px"><div style="width:'+Math.round(jn/7*100)+'%"></div></div>'+
+   '<div class="tot" style="margin-top:10px;color:'+(jn>=4?"var(--grn)":"var(--mut)")+';font-weight:'+(jn>=4?"650":"400")+'">'+msg+'</div>'+
+   '<div class="note" style="margin-top:10px">A judgment a day is what makes the drill worth doing. Tick it on the Today tab and this fills.</div></div>';
+
   h+='<div class="c"><h2>⚖️ Courtroom listening</h2>'+
    '<div class="note">Fifteen minutes, any bench, weekdays. The cheapest advocacy education there is — and the only one that shows you what fails.</div>'+
    '<input placeholder="Which court, which matter?" value="'+(s.ct||"")+'" oninput="fl(\'ct\',this.value)">'+
