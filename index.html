@@ -113,15 +113,12 @@ nav div{flex:1;text-align:center;padding:10px 0 8px;font-size:10.5px;font-weight
 nav div.on{color:var(--grn)}
 nav div s{display:block;font-size:17px;text-decoration:none;margin-bottom:2px;line-height:1}
 .note{font-size:12.5px;color:var(--mut);line-height:1.55}
-#gate{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;
- align-items:center;justify-content:center;padding:30px;text-align:center}
-#gate .mk{width:70px;height:70px;border-radius:21px;background:var(--grn);display:flex;
- align-items:center;justify-content:center;margin-bottom:20px;font-size:34px}
+#gate{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
+#gate .mk{width:70px;height:70px;border-radius:21px;background:var(--grn);display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:34px}
 #gate h3{margin:0 0 6px;font-size:20px;font-weight:680;letter-spacing:-.02em}
 #gate p{margin:0 0 22px;font-size:14px;color:var(--mut);max-width:250px;line-height:1.5}
 #gate input{width:170px;text-align:center;font-size:26px;letter-spacing:.35em;padding:14px 10px;font-weight:600;margin:0}
 #gate .err{color:var(--wrm);font-size:13px;height:18px;margin-top:12px;font-weight:600}
-
 </style>
 </head>
 <body>
@@ -146,6 +143,8 @@ nav div s{display:block;font-size:17px;text-decoration:none;margin-bottom:2px;li
 <script>
 /* ==========================================================
    PASSCODE - change these digits and re-upload to change it.
+   Note: this is a doorstop, not encryption. Anyone with the
+   address can read this file's source, including this line.
    ========================================================== */
 var PIN = "3333";
 /* ========================================================== */
@@ -213,10 +212,10 @@ var CYCLE={
 };
 
 var MEDS=[
- {k:"megaferon",i:"🩸",n:"Megaferon",s:"Empty stomach · ~11 am or bedtime · nothing dairy, tea or coffee for an hour"},
- {k:"me12",i:"💊",n:"ME12",s:"After your first meal · no restrictions"},
+ {k:"med1",i:"🩸",n:"Morning tablet",s:"Empty stomach · ~11 am or bedtime · nothing dairy, tea or coffee for an hour"},
+ {k:"med2",i:"💊",n:"After-meal tablet",s:"After your first meal · no restrictions"},
  {k:"creatine",i:"🥄",n:"Creatine",s:"3–5 g · any time · stir into water and drink it all"},
- {k:"lumia",i:"☀️",n:"Lumia 60K",s:"Saturdays only · with dinner, your fattiest meal",sat:true}];
+ {k:"med3",i:"☀️",n:"Weekly sachet",s:"Saturdays only · with dinner, your fattiest meal",sat:true}];
 
 var SNACK={
  1:["Roasted makhana in ghee, black pepper, rock salt",4,"Five minutes in a pan. Light enough that dinner still lands."],
@@ -351,19 +350,18 @@ function row(o){var s=st(),on=s[o.k]?" on":"";
 
 function todayItems(){
  var a=[{k:"train",i:"🏋️",n:"Training session",s:"Whichever tier you picked"},
-        {k:"physio",i:"🩹",n:"Elbow physio",s:"Every day, rest days included"},
+        {k:"physio",i:"🩹",n:"Physio",s:"Every day, rest days included"},
         {k:"brunch",i:"🍳",n:"Brunch",s:"Morning meal and lunch as one"},
         {k:"fruit",i:"🍎",n:"Fruit",s:"One a day — guava, apple, orange, papaya"},
         {k:"snack",i:"🥣",n:"Evening snack",s:SNACK[view][0]},
         {k:"dinner",i:"🥗",n:"Dinner",s:"Salad and paneer · finish by 8:30 pm"},
-        {k:"protein",i:"🥤",n:"Protein powder"},
-        {k:"prot_t",i:"🎯",n:"Protein target hit",s:TIER[st().t][1]+" g today"}];
+        {k:"protein",i:"🥤",n:"Protein powder"}];
  var n=[{k:"face",i:"🧴",n:"Night face routine",s:"Cleanse · treat · moisturise"},
         {k:"feet",i:"🦶",n:"Foot moisturiser"}];
- var w=[{k:"judgment",i:"📜",n:"Read a judgment",s:"One a day, however short — this is the drill prep",tg:"prep"}];
+ var w=[{k:"judgment",i:"📜",n:"Read a judgment",s:"The day's assignment is on the Law tab — this is the drill prep",tg:"prep"},
+        {k:"work",i:"💼",n:"Work",s:"The matters you actually moved today",tg:"daily"}];
  if(view>=1&&view<=5){
   w.push({k:"court",i:"⚖️",n:"Hear a courtroom — 15 min",s:"Log which court on the Law tab",tg:"weekday"});
-  w.push({k:"read",i:"📖",n:"Advocacy reading",s:"Arrives at 7 am",tg:"weekday"});
  }
  if(view===0||view===6){
   w.push({k:"saladprep",i:"🥡",n:"Prep the salad boxes",s:"Enough for the week's dinners — chop, box, done",tg:"weekend",tgw:1});
@@ -429,7 +427,7 @@ function render(){
   h+='<div class="c"><h2>📆 The training week</h2>'+[1,2,3,4,5,6,0].map(function(i){
    return '<div class="q"><span><span class="qi">'+CYCLE[i].i+'</span>'+CYCLE[i].f+'</span><em>'+FL[i].slice(0,3)+'</em></div>'}).join("")+'</div>';
 
-  h+='<div class="c"><h2>🩹 The elbow</h2>'+
+  h+='<div class="c"><h2>🩹 The injury</h2>'+
    '<div class="warn"><b class="h">This overrides the page</b>Your physiotherapist\'s instructions come first. If anything here conflicts with what they have told you, follow them, not this.</div>'+
    '<div style="margin-top:13px"><div class="lbl">Avoid until cleared</div>'+
    '<div class="note">Push-ups and any plank on your hands · hanging or dead hangs · loaded biceps curls and triceps extensions · anything that fully straightens the elbow under weight · pushing up from the floor with that arm · locking the elbow out.</div></div>'+
@@ -444,7 +442,7 @@ function render(){
    '<div class="r"><i></i><div><b>Brunch</b> — morning meal and lunch as one. Make it the biggest thing you eat.</div></div>'+
    '<div class="r"><i></i><div><b>Evening snack</b> — real, not a holdover. It is what stops dinner becoming a second lunch.</div></div>'+
    '<div class="r"><i></i><div><b>Dinner</b> — salad and paneer, finished by 8:30 pm. Built from the boxes you prepped at the weekend, so a late evening never becomes a reason to skip it.</div></div>'+
-   '<div class="r"><i></i><div><b>Fruit</b> — one a day. Not within an hour of Megaferon if it is citrus-heavy on an empty stomach.</div></div>'+
+   '<div class="r"><i></i><div><b>Fruit</b> — one a day. Not within an hour of the morning tablet if it is citrus-heavy on an empty stomach.</div></div>'+
    '<div class="r"><i></i><div><b>Protein powder</b> — once daily. On three meals instead of five it is carrying more than it looks.</div></div>'+
    '<div class="tip"><b class="h">Fewer meals, same target</b>Three eating slots have to carry '+TIER[s.t][1]+' g of protein today. That only works if each one is protein-first — the salad and the veg are built around the paneer, not the other way round.</div></div>';
 
@@ -457,7 +455,7 @@ function render(){
    return '<div class="q"><span>'+x[0]+'</span><em>'+x[1]+'g</em></div>'}).join("")+'</div>';
   h+='<div class="c"><h2>🥗 Dinner options</h2>'+DINNER.map(function(x){
    return '<div class="q"><span>'+x[0]+'</span><em>'+x[1]+'g</em></div>'}).join("")+
-   '<div class="note" style="margin-top:12px">No sugar in tea or coffee — that one is settled, so it is not tracked. No tea or coffee within an hour of Megaferon.</div></div>';
+   '<div class="note" style="margin-top:12px">No sugar in tea or coffee — that one is settled, so it is not tracked. No tea or coffee within an hour of the morning tablet.</div></div>';
  }
 
  if(tab==="law"){
@@ -490,14 +488,19 @@ function render(){
    '<input placeholder="Which court, which matter?" value="'+(s.ct||"")+'" oninput="fl(\'ct\',this.value)">'+
    '<textarea rows="2" placeholder="One line — what the Bench did that you would copy, or avoid">'+(s.cn||"")+'</textarea></div>';
 
-  h+='<div class="c"><h2>The week\'s shape</h2>'+
+  h+='<div class="c"><h2>💼 Work</h2>'+
+   '<div class="note">What actually moved today — matters drafted, filed, conferences, advices given. Not a to-do list; a record of what the day produced.</div>'+
+   '<textarea rows="3" placeholder="Matters you moved today" oninput="fl(\'wkd\',this.value)">'+(s.wkd||"")+'</textarea>'+
+   '<div class="note" style="margin-top:9px">At the December review this is the only honest answer to what the practice actually did this year.</div></div>';
+
+  h+='<div class="c"><h2>📆 The week\'s shape</h2>'+
    '<div class="q"><span>Reading — statute, then prior authority</span><em>Mon–Thu 7 am</em></div>'+
    '<div class="q"><span>Write the three prep items</span><em>Fri</em></div>'+
    '<div class="q"><span>The drill — argue blind, 45 min</span><em>Sat / Sun</em></div>'+
    '<div class="tip"><b class="h">The three prep items</b>The opening proposition, in one sentence. Three concessions you will give, and the one you will not. The three questions you least want asked.'+
    '<div class="a">Written down, on Friday. Every rubric line that failed in the first session traced back to skipping these.</div></div></div>';
 
-  h+='<div class="c"><h2>📁 Where the drill lives</h2><div class="note">The case queue, the rubric and the running log are in your <b>SCR</b> folder — <b>Advocacy Drill — Protocol.md</b> and <b>Advocacy Log.md</b>. Fourteen cases, one a week, which lands just inside 20 December.</div></div>';
+  h+='<div class="c"><h2>📁 Where the drill lives</h2><div class="note">The case queue, the rubric and the running log live in your case-library folder on the Mac. Fourteen cases, one a week, which lands just inside 20 December.</div></div>';
  }
 
  if(tab==="me"){
