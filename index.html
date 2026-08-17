@@ -48,6 +48,13 @@ main{padding:8px 14px 24px;max-width:660px;margin:0 auto}
 .lb b{font-weight:500}
 .tg{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:20px;background:var(--blus);color:var(--blu);font-weight:750;align-self:center;flex:none}
 .tg.w{background:var(--wrms);color:var(--wrm)}
+.tg.ta{background:#fbe9e7;color:#a03a26}
+.tg.tb{background:var(--blus);color:var(--blu)}
+.tg.tc{background:var(--soft);color:var(--mut)}
+.tg.td{background:#fdf0d8;color:#8a6212}
+@media(prefers-color-scheme:dark){.tg.ta{background:#331d17;color:#e79a80}.tg.td{background:#312613;color:#dcae5e}}
+.it.med{align-items:flex-start}
+.it.med .tg{align-self:flex-start;margin-top:3px}
 .tiers{display:flex;gap:6px;margin-bottom:14px}
 .tr{flex:1;text-align:center;padding:9px 4px;border-radius:11px;border:1.5px solid var(--line);font-size:12.5px;font-weight:650;color:var(--mut)}
 .tr.on{border-color:var(--grn);background:var(--grns);color:var(--grn)}
@@ -84,6 +91,9 @@ input:focus,textarea:focus{outline:none;border-color:var(--grn)}
 .ph .s{font-size:12.5px;color:var(--mut);margin-top:2px;line-height:1.45}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .grid2 input{margin-top:0}
+.tk{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.tk .tkn{flex:none;width:24px;height:24px;border-radius:8px;background:var(--soft);color:var(--mut);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:750}
+.tk input{margin-top:0}
 .ate{margin-bottom:10px}
 .ate .al{font-size:12px;color:var(--mut);font-weight:650}
 .ate textarea,.ate input{margin-top:5px}
@@ -141,13 +151,9 @@ nav div s{display:block;font-size:17px;text-decoration:none;margin-bottom:2px;li
 <nav id="nav"></nav>
 
 <script>
-/* ==========================================================
-   PASSCODE - change these digits and re-upload to change it.
-   Note: this is a doorstop, not encryption. Anyone with the
-   address can read this file's source, including this line.
-   ========================================================== */
+/* PASSCODE - change these digits and re-upload. A doorstop, not encryption:
+   anyone with the address can read this line. */
 var PIN = "3333";
-/* ========================================================== */
 (function(){
   var g=document.getElementById("gate"),i=document.getElementById("pin"),e=document.getElementById("perr");
   var ok=false; try{ok=localStorage.getItem("trk-ok")==="1"}catch(x){}
@@ -211,11 +217,28 @@ var CYCLE={
   E:"Physio + 20 min stretch + 15 min easy walk. No training — legs are built on rest days."}
 };
 
+var CORE={
+ flat:[
+  ["Dead bug","Arms by your sides or crossed on the chest — not reaching overhead. Low back stays pressed to the floor."],
+  ["Lying leg raises","Hands flat under your hips. Lower only as far as your back stays down."],
+  ["Reverse crunch","Knees to chest, then lower slowly. The slow part is the work."],
+  ["Heel taps","Alternate heels to the floor, knees bent, back pressed down."],
+  ["Flutter kicks","Small and controlled. If your back arches, raise the legs higher."],
+  ["Hollow hold","Arms alongside the body, never overhead. Start at 15 seconds."],
+  ["Glute bridge march","Hips up, then lift one knee at a time without the hips dropping."],
+  ["Bicycle crunch","Fingertips light at the temples. Never pull on your neck."]],
+ fore:[
+  ["Forearm plank","Both forearms flat, elbows under shoulders. Only if it is completely pain-free."],
+  ["Side plank — right side only","On the right forearm. Never set up on the left."],
+  ["Bird dog","Closed fist on the floor rather than an open palm, so the joint stays neutral."]],
+ no:["Any plank or push-up on your hands","Mountain climbers","Russian twists holding a weight",
+     "Hanging or dead hangs","Anything that straightens the elbow under load"]
+};
 var MEDS=[
- {k:"med1",i:"🩸",n:"Morning tablet",s:"Empty stomach · ~11 am or bedtime · nothing dairy, tea or coffee for an hour"},
- {k:"med2",i:"💊",n:"After-meal tablet",s:"After your first meal · no restrictions"},
- {k:"creatine",i:"🥄",n:"Creatine",s:"3–5 g · any time · stir into water and drink it all"},
- {k:"med3",i:"☀️",n:"Weekly sachet",s:"Saturdays only · with dinner, your fattiest meal",sat:true}];
+ {k:"med1",i:"🩸",n:"Iron",s:"Empty stomach. Nothing dairy, tea or coffee for a full hour either side.",tg:"11 am / bedtime",cl:"a"},
+ {k:"med2",i:"💊",n:"B12",s:"With or just after your first meal. No restrictions.",tg:"after brunch",cl:"b"},
+ {k:"creatine",i:"🥄",n:"Creatine",s:"3–5 g stirred into water. Drink all of it.",tg:"any time",cl:"c"},
+ {k:"med3",i:"☀️",n:"Vitamin D",s:"One sachet, with the fattiest meal of the day.",tg:"Sat · dinner",cl:"d",sat:true}];
 
 var SNACK={
  1:["Roasted makhana in ghee, black pepper, rock salt",4,"Five minutes in a pan. Light enough that dinner still lands."],
@@ -337,7 +360,7 @@ function weekIdx(){var n=new Date();var d=Math.floor((n-WK0)/6048e5);return d<0?
 var tab="today", view=new Date().getDay(), S={}, M={};
 function ld(){try{var r=localStorage.getItem("trk2");if(r){var o=JSON.parse(r);S=o.S||{};M=o.M||{}}}catch(e){}}
 function sv(){try{localStorage.setItem("trk2",JSON.stringify({S:S,M:M}))}catch(e){}}
-function st(){var o=S[view]=S[view]||{};if(typeof o.w!=="number"||o.w<0||o.w>15)o.w=0;if(!TIER[o.t])o.t="G";return o}
+function st(){var o=S[view]=S[view]||{};if(typeof o.w!=="number"||o.w<0||o.w>10)o.w=0;if(!TIER[o.t])o.t="G";return o}
 function phase(){var n=new Date();for(var i=0;i<PHASES.length;i++){if(n<=PHASES[i].to)return PHASES[i]}return PHASES[2]}
 function daysLeft(){return Math.max(0,Math.ceil((END-new Date())/864e5))}
 
@@ -393,14 +416,20 @@ function render(){
    (cy.c!=="rest"&&p.n>1?'<div style="margin-top:9px;color:var(--mut);font-size:13.5px">Phase '+p.n+' — '+p.mod+'</div>':'')+
    '</div></div>';
 
-  h+='<div class="c"><h2>💧 Water · 200 ml a drop</h2><div class="glass">'+
-   Array.from({length:15},function(_,i){return '<svg class="g'+(i<s.w?" on":"")+'" viewBox="0 0 24 26" onclick="pw('+i+')">'+
+  h+='<div class="c"><h2>💧 Water · 300 ml a drop</h2><div class="glass">'+
+   Array.from({length:10},function(_,i){return '<svg class="g'+(i<s.w?" on":"")+'" viewBox="0 0 24 26" onclick="pw('+i+')">'+
     '<path d="M12 2.4C12 2.4 4.6 10.8 4.6 15.6a7.4 7.4 0 0 0 14.8 0C19.4 10.8 12 2.4 12 2.4Z"/></svg>'}).join("")+
-   '</div><div class="tot"><b>'+(s.w*200)+' ml</b> of 3000 · '+(15-s.w)+' to go</div>'+
-   '<div class="bar"><div style="width:'+Math.round(s.w/15*100)+'%"></div></div></div>';
+   '</div><div class="tot"><b>'+(s.w*300)+' ml</b> of 3000 · '+(10-s.w)+' to go</div>'+
+   '<div class="bar"><div style="width:'+Math.round(s.w/10*100)+'%"></div></div></div>';
 
   h+='<div class="c"><h2>💊 Medicines</h2>'+MEDS.filter(function(m){return !m.sat||view===6})
-      .map(function(m){return row({k:m.k,i:m.i,n:m.n,s:m.s,tg:m.sat?"saturday":"",tgw:1})}).join("")+'</div>';
+      .map(function(m){
+        var on=s[m.k]?" on":"";
+        return '<div class="it med'+on+'" onclick="tk(\''+m.k+'\')"><div class="bx"></div>'+
+         '<div class="ic">'+m.i+'</div>'+
+         '<div class="lb"><b>'+m.n+'</b><small>'+m.s+'</small></div>'+
+         '<span class="tg t'+m.cl+'">'+m.tg+'</span></div>'}).join("")+
+   '<div class="note" style="margin-top:10px">Iron and the morning tea are enemies — keep a clear hour between them.</div></div>';
 
   h+='<div class="c"><h2>✅ The day</h2>'+I.a.map(row).join("")+'</div>';
   h+='<div class="c"><h2>🍽️ What you ate</h2>'+
@@ -427,6 +456,15 @@ function render(){
   h+='<div class="c"><h2>📆 The training week</h2>'+[1,2,3,4,5,6,0].map(function(i){
    return '<div class="q"><span><span class="qi">'+CYCLE[i].i+'</span>'+CYCLE[i].f+'</span><em>'+FL[i].slice(0,3)+'</em></div>'}).join("")+'</div>';
 
+  h+='<div class="c"><h2>🌀 Core that spares the joint</h2>'+
+   '<div class="note">Three rounds, 40 seconds on and 20 off. Everything below keeps load off the joint — either flat on your back, or on the forearms with the elbow bent and supported.</div>'+
+   '<div style="margin-top:14px"><div class="lbl">On your back — nothing through the arm</div>'+
+   CORE.flat.map(function(x){return '<div class="rd"><div class="rdb"><div class="rdt">'+x[0]+'</div><div class="rdc">'+x[1]+'</div></div></div>'}).join("")+'</div>'+
+   '<div style="margin-top:14px"><div class="lbl">On the forearms — never the palms</div>'+
+   CORE.fore.map(function(x){return '<div class="rd"><div class="rdb"><div class="rdt">'+x[0]+'</div><div class="rdc">'+x[1]+'</div></div></div>'}).join("")+'</div>'+
+   '<div class="warn" style="margin-top:14px"><b class="h">Not until your physio clears you</b>'+CORE.no.join(' · ')+'</div>'+
+   '<div class="tip"><b class="h">The rule</b>Sharp pain, joint pain or swelling in the elbow means stop that movement — not push through it. Muscle soreness the next day is a different thing and it is fine.</div></div>';
+
   h+='<div class="c"><h2>🩹 The injury</h2>'+
    '<div class="warn"><b class="h">This overrides the page</b>Your physiotherapist\'s instructions come first. If anything here conflicts with what they have told you, follow them, not this.</div>'+
    '<div style="margin-top:13px"><div class="lbl">Avoid until cleared</div>'+
@@ -442,7 +480,7 @@ function render(){
    '<div class="r"><i></i><div><b>Brunch</b> — morning meal and lunch as one. Make it the biggest thing you eat.</div></div>'+
    '<div class="r"><i></i><div><b>Evening snack</b> — real, not a holdover. It is what stops dinner becoming a second lunch.</div></div>'+
    '<div class="r"><i></i><div><b>Dinner</b> — salad and paneer, finished by 8:30 pm. Built from the boxes you prepped at the weekend, so a late evening never becomes a reason to skip it.</div></div>'+
-   '<div class="r"><i></i><div><b>Fruit</b> — one a day. Not within an hour of the morning tablet if it is citrus-heavy on an empty stomach.</div></div>'+
+   '<div class="r"><i></i><div><b>Fruit</b> — one a day. If it lands near the iron, make it citrus: vitamin C helps iron absorb. It is dairy and tea you keep away, not fruit.</div></div>'+
    '<div class="r"><i></i><div><b>Protein powder</b> — once daily. On three meals instead of five it is carrying more than it looks.</div></div>'+
    '<div class="tip"><b class="h">Fewer meals, same target</b>Three eating slots have to carry '+TIER[s.t][1]+' g of protein today. That only works if each one is protein-first — the salad and the veg are built around the paneer, not the other way round.</div></div>';
 
@@ -455,7 +493,7 @@ function render(){
    return '<div class="q"><span>'+x[0]+'</span><em>'+x[1]+'g</em></div>'}).join("")+'</div>';
   h+='<div class="c"><h2>🥗 Dinner options</h2>'+DINNER.map(function(x){
    return '<div class="q"><span>'+x[0]+'</span><em>'+x[1]+'g</em></div>'}).join("")+
-   '<div class="note" style="margin-top:12px">No sugar in tea or coffee — that one is settled, so it is not tracked. No tea or coffee within an hour of the morning tablet.</div></div>';
+   '<div class="note" style="margin-top:12px">No sugar in tea or coffee — that one is settled, so it is not tracked. Keep tea, coffee and dairy a clear hour from the iron.</div></div>';
  }
 
  if(tab==="law"){
@@ -488,10 +526,26 @@ function render(){
    '<input placeholder="Which court, which matter?" value="'+(s.ct||"")+'" oninput="fl(\'ct\',this.value)">'+
    '<textarea rows="2" placeholder="One line — what the Bench did that you would copy, or avoid">'+(s.cn||"")+'</textarea></div>';
 
+  var YD=(view+6)%7, Y=S[YD]||{}, carried=[Y.t1,Y.t2,Y.t3].filter(function(x){return x&&x.trim()});
   h+='<div class="c"><h2>💼 Work</h2>'+
-   '<div class="note">What actually moved today — matters drafted, filed, conferences, advices given. Not a to-do list; a record of what the day produced.</div>'+
-   '<textarea rows="3" placeholder="Matters you moved today" oninput="fl(\'wkd\',this.value)">'+(s.wkd||"")+'</textarea>'+
-   '<div class="note" style="margin-top:9px">At the December review this is the only honest answer to what the practice actually did this year.</div></div>';
+   '<div class="note">What actually moved today — matters drafted, filed, conferences, advices given. Use matter numbers rather than client names; it is more precise and it keeps privilege out of your backups.</div>'+
+   '<textarea rows="3" placeholder="e.g. CA 37/26 — drafted s.34 reply, 2h" oninput="fl(\'wkd\',this.value)">'+(s.wkd||"")+'</textarea>';
+
+  if(carried.length){
+   h+='<div style="margin-top:16px"><div class="lbl">Carried in from '+FL[YD]+'</div>'+
+    carried.map(function(x,ix){
+      var k="c"+(ix+1), on=s[k]?" on":"";
+      return '<div class="it'+on+'" onclick="tk(\''+k+'\')" style="min-height:38px;padding:6px 0">'+
+       '<div class="bx"></div><div class="lb" style="font-size:14.5px"><b>'+x+'</b></div></div>'}).join("")+
+    '</div>';
+  }
+
+  h+='<div style="margin-top:16px"><div class="lbl">Tomorrow — the three you are taking on</div>'+
+   [1,2,3].map(function(nn){
+     return '<div class="tk"><span class="tkn">'+nn+'</span>'+
+      '<input placeholder="'+(nn===1?"The one that must happen":nn===2?"The one you keep postponing":"The small one you will actually finish")+'" '+
+      'value="'+(s["t"+nn]||"").replace(/"/g,"&quot;")+'" oninput="fl(\'t'+nn+'\',this.value)"></div>'}).join("")+
+   '<div class="note" style="margin-top:10px">Three, not five. They appear tomorrow to tick off — and anything you do not carry forward is a decision, not an oversight.</div></div></div>';
 
   h+='<div class="c"><h2>📆 The week\'s shape</h2>'+
    '<div class="q"><span>Reading — statute, then prior authority</span><em>Mon–Thu 7 am</em></div>'+
