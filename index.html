@@ -33,6 +33,8 @@ body{margin:0;background:var(--bg);color:var(--ink);
 .d{flex:1;text-align:center;padding:7px 0;border-radius:11px;font-size:11px;font-weight:650;
  color:var(--mut);background:var(--card);border:1px solid var(--line)}
 .d.on{background:var(--grn);border-color:var(--grn);color:var(--bg)}
+.d.td:not(.on){border-color:var(--grn)}
+.wnav{flex:none;width:24px;display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:19px;font-weight:700}
 .d b{display:block;font-size:14px;margin-top:1px}
 main{padding:8px 14px 24px;max-width:660px;margin:0 auto}
 .c{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 17px;margin-bottom:12px}
@@ -170,6 +172,7 @@ var PIN = "3333";
 <script>
 /* ---------- constants ---------- */
 var START=new Date(2026,7,14), END=new Date(2026,11,20);
+var MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 var DS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
     FL=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 var TABS=[["today","Today","🗓️"],["plan","Plan","🧭"],["food","Food","🍽️"],["law","Law","⚖️"],["me","Me","📈"]];
@@ -353,18 +356,49 @@ var WEEKS=[
  ["Consolidate","Your own notes from all fourteen weeks","The recurring line in your fumble list. Read for that, not for this case."],
  ["Write the three prep items","","Opening proposition · three concessions and the one you hold · three worst questions."]]}
 ];
-function weekIdx(){var n=new Date();var d=Math.floor((n-WK0)/6048e5);return d<0?0:(d>13?13:d)}
+function weekIdx(){var d=Math.floor((dt(view)-WK0)/6048e5);return d<0?0:(d>13?13:d)}
 
 
 /* ---------- state ---------- */
-var tab="today", view=new Date().getDay(), S={}, M={};
-function ld(){try{var r=localStorage.getItem("trk2");if(r){var o=JSON.parse(r);S=o.S||{};M=o.M||{}}}catch(e){}}
+var tab="today", S={}, M={};
+function p2(n){return (n<10?"0":"")+n}
+function iso(d){return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate())}
+function dt(s){var a=s.split("-");return new Date(+a[0],+a[1]-1,+a[2])}
+function addD(s,n){var d=dt(s);d.setDate(d.getDate()+n);return iso(d)}
+function dow(s){return dt(s).getDay()}
+function monOf(s){var d=dt(s);var k=(d.getDay()+6)%7;d.setDate(d.getDate()-k);return iso(d)}
+function weekDates(s){var m=monOf(s),a=[];for(var i=0;i<7;i++)a.push(addD(m,i));return a}
+var view=iso(new Date());
+function ld(){try{var r=localStorage.getItem("trk2");if(r){var o=JSON.parse(r);S=o.S||{};M=o.M||{}}}catch(e){}
+ var wk=weekDates(iso(new Date()));
+ for(var i=0;i<7;i++){ if(S[i]!==undefined){ var d=wk[(i+6)%7]; if(!S[d])S[d]=S[i]; delete S[i]; } }}
 function sv(){try{localStorage.setItem("trk2",JSON.stringify({S:S,M:M}))}catch(e){}}
 function st(){var o=S[view]=S[view]||{};if(typeof o.w!=="number"||o.w<0||o.w>10)o.w=0;if(!TIER[o.t])o.t="G";return o}
 function phase(){var n=new Date();for(var i=0;i<PHASES.length;i++){if(n<=PHASES[i].to)return PHASES[i]}return PHASES[2]}
 function daysLeft(){return Math.max(0,Math.ceil((END-new Date())/864e5))}
 
 /* ---------- rows ---------- */
+
+function workCard(s){
+ var YD=addD(view,-1), Y=S[YD]||{}, carried=[Y.t1,Y.t2,Y.t3].filter(function(x){return x&&x.trim()});
+ var h='<div class="c"><h2>💼 Work</h2>';
+ if(carried.length){
+  h+='<div class="lbl">Carried in from '+FL[dow(YD)]+'</div>'+
+   carried.map(function(x,ix){
+     var k="c"+(ix+1), on=s[k]?" on":"";
+     return '<div class="it'+on+'" onclick="tk(\''+k+'\')" style="min-height:38px;padding:6px 0">'+
+      '<div class="bx"></div><div class="lb" style="font-size:14.5px"><b>'+x+'</b></div></div>'}).join("")+
+   '<div style="height:16px"></div>';
+ }
+ h+='<div class="lbl">Tomorrow — the three you are taking on</div>'+
+  [1,2,3].map(function(nn){
+    return '<div class="tk"><span class="tkn">'+nn+'</span>'+
+     '<input placeholder="'+(nn===1?"The one that must happen":nn===2?"The one you keep postponing":"The small one you will actually finish")+'" '+
+     'value="'+(s["t"+nn]||"").replace(/"/g,"&quot;")+'" oninput="fl(\'t'+nn+'\',this.value)"></div>'}).join("")+
+  '<div class="note" style="margin-top:10px">Three, not five. Use matter numbers rather than client names. They come back tomorrow to tick off — and anything you do not carry forward is a decision, not an oversight.</div></div>';
+ return h;
+}
+
 function row(o){var s=st(),on=s[o.k]?" on":"";
  return '<div class="it'+on+'" onclick="tk(\''+o.k+'\')"><div class="bx"></div>'+
  (o.i?'<div class="ic">'+o.i+'</div>':'')+
@@ -372,21 +406,22 @@ function row(o){var s=st(),on=s[o.k]?" on":"";
  (o.tg?'<span class="tg'+(o.tgw?' w':'')+'">'+o.tg+'</span>':'')+'</div>'}
 
 function todayItems(){
+ var DW=dow(view);
  var a=[{k:"train",i:"🏋️",n:"Training session",s:"Whichever tier you picked"},
         {k:"physio",i:"🩹",n:"Physio",s:"Every day, rest days included"},
         {k:"brunch",i:"🍳",n:"Brunch",s:"Morning meal and lunch as one"},
         {k:"fruit",i:"🍎",n:"Fruit",s:"One a day — guava, apple, orange, papaya"},
-        {k:"snack",i:"🥣",n:"Evening snack",s:SNACK[view][0]},
+        {k:"snack",i:"🥣",n:"Evening snack",s:SNACK[DW][0]},
         {k:"dinner",i:"🥗",n:"Dinner",s:"Salad and paneer · finish by 8:30 pm"},
         {k:"protein",i:"🥤",n:"Protein powder"}];
  var n=[{k:"face",i:"🧴",n:"Night face routine",s:"Cleanse · treat · moisturise"},
         {k:"feet",i:"🦶",n:"Foot moisturiser"}];
  var w=[{k:"judgment",i:"📜",n:"Read a judgment",s:"The day's assignment is on the Law tab — this is the drill prep",tg:"prep"},
         {k:"work",i:"💼",n:"Work",s:"The matters you actually moved today",tg:"daily"}];
- if(view>=1&&view<=5){
+ if(DW>=1&&DW<=5){
   w.push({k:"court",i:"⚖️",n:"Hear a courtroom — 15 min",s:"Log which court on the Law tab",tg:"weekday"});
  }
- if(view===0||view===6){
+ if(DW===0||DW===6){
   w.push({k:"saladprep",i:"🥡",n:"Prep the salad boxes",s:"Enough for the week's dinners — chop, box, done",tg:"weekend",tgw:1});
   w.push({k:"oil",i:"💆",n:"Hair oiling",s:"Either weekend day",tg:"weekend",tgw:1});
   w.push({k:"drill",i:"🗣️",n:"Advocacy drill — 45 min",s:"Argue blind, eight questions, score",tg:"weekend",tgw:1});
@@ -398,18 +433,23 @@ function todayItems(){
 
 /* ---------- render ---------- */
 function render(){
- var s=st(), p=phase(), td=new Date().getDay(), I=todayItems();
+ var s=st(), p=phase(), DW=dow(view), td=iso(new Date()), I=todayItems();
  document.getElementById("ttl").textContent={today:"Today",plan:"The plan",food:"Food",law:"Law",me:"Me"}[tab];
- document.getElementById("sub").textContent=FL[view]+(view===td?" · today":"")+" · Phase "+p.n;
+ document.getElementById("sub").textContent=FL[DW]+" "+dt(view).getDate()+" "+MN[dt(view).getMonth()]+(view===td?" · today":"")+" · Phase "+p.n;
  document.getElementById("cd").textContent=daysLeft()+" days to 20 Dec";
- document.getElementById("days").innerHTML=DS.map(function(d,i){
-  var o=S[i]||{},c=0;for(var k in o){if(k!=="w"&&k!=="t"&&o[k]===true)c++}
-  return '<div class="d'+(i===view?" on":"")+'" onclick="gd('+i+')">'+d+'<b>'+(c||"·")+'</b></div>'}).join("");
+ var WKD=weekDates(view), TDY=iso(new Date());
+ document.getElementById("days").innerHTML=
+  '<div class="wnav" onclick="gw(-1)">\u2039</div>'+
+  WKD.map(function(d){
+   var o=S[d]||{},c=0;for(var k in o){if(k!=="w"&&k!=="t"&&o[k]===true)c++}
+   return '<div class="d'+(d===view?" on":"")+(d===TDY?" td":"")+'" onclick="gd(\''+d+'\')">'+
+    DS[dow(d)]+'<b>'+(c||"\u00b7")+'</b></div>'}).join("")+
+  '<div class="wnav" onclick="gw(1)">\u203a</div>';
 
  var h="";
 
  if(tab==="today"){
-  var cy=CYCLE[view];
+  var cy=CYCLE[DW];
   h+='<div class="c"><h2>'+cy.i+' '+cy.f+'</h2><div class="tiers">'+
    ["B","G","E"].map(function(t){return '<div class="tr'+(s.t===t?" on":"")+'" onclick="gt2(\''+t+'\')">'+TIER[t][0]+'</div>'}).join("")+
    '</div><div class="sess"><div class="h">'+cy.i+' '+cy.f+'</div>'+cy[s.t]+
@@ -422,7 +462,7 @@ function render(){
    '</div><div class="tot"><b>'+(s.w*300)+' ml</b> of 3000 · '+(10-s.w)+' to go</div>'+
    '<div class="bar"><div style="width:'+Math.round(s.w/10*100)+'%"></div></div></div>';
 
-  h+='<div class="c"><h2>💊 Medicines</h2>'+MEDS.filter(function(m){return !m.sat||view===6})
+  h+='<div class="c"><h2>💊 Medicines</h2>'+MEDS.filter(function(m){return !m.sat||DW===6})
       .map(function(m){
         var on=s[m.k]?" on":"";
         return '<div class="it med'+on+'" onclick="tk(\''+m.k+'\')"><div class="bx"></div>'+
@@ -434,15 +474,16 @@ function render(){
   h+='<div class="c"><h2>✅ The day</h2>'+I.a.map(row).join("")+'</div>';
   h+='<div class="c"><h2>🍽️ What you ate</h2>'+
    '<div class="ate"><span class="al">🍳 Brunch</span>'+
-   '<textarea rows="2" placeholder="'+BRUNCH[view%BRUNCH.length][0]+'" oninput="fl(\'eb\',this.value)">'+(s.eb||"")+'</textarea></div>'+
+   '<textarea rows="2" placeholder="'+BRUNCH[DW%BRUNCH.length][0]+'" oninput="fl(\'eb\',this.value)">'+(s.eb||"")+'</textarea></div>'+
    '<div class="ate"><span class="al">🥣 Evening snack</span>'+
-   '<textarea rows="2" placeholder="'+SNACK[view][0]+'" oninput="fl(\'es\',this.value)">'+(s.es||"")+'</textarea></div>'+
+   '<textarea rows="2" placeholder="'+SNACK[DW][0]+'" oninput="fl(\'es\',this.value)">'+(s.es||"")+'</textarea></div>'+
    '<div class="ate"><span class="al">🥗 Dinner</span>'+
-   '<textarea rows="2" placeholder="'+DINNER[view%DINNER.length][0]+'" oninput="fl(\'ed\',this.value)">'+(s.ed||"")+'</textarea></div>'+
+   '<textarea rows="2" placeholder="'+DINNER[DW%DINNER.length][0]+'" oninput="fl(\'ed\',this.value)">'+(s.ed||"")+'</textarea></div>'+
    '<div class="ate"><span class="al">🎯 Protein today (g)</span>'+
    '<input inputmode="numeric" placeholder="target '+TIER[s.t][1]+'" value="'+(s.pg||"")+'" oninput="fl(\'pg\',this.value)"></div>'+
    '<div class="note" style="margin-top:10px">The greyed-out text is a suggestion, not a record — type over it. Blank is fine; an honest blank beats a tidy fiction.</div></div>';
-  h+='<div class="c"><h2>'+(view===0||view===6?"🌤️ Weekend":"🎙️ Practice")+'</h2>'+I.w.map(row).join("")+'</div>';
+  h+='<div class="c"><h2>'+(DW===0||DW===6?"🌤️ Weekend":"🎙️ Practice")+'</h2>'+I.w.map(row).join("")+'</div>';
+  h+=workCard(s);
   h+='<div class="c"><h2>🧠 Mind</h2>'+I.m.map(row).join("")+'</div>';
   h+='<div class="c"><h2>🌙 Night</h2>'+I.n.map(row).join("")+'</div>';
  }
@@ -475,7 +516,7 @@ function render(){
  }
 
  if(tab==="food"){
-  var sn=SNACK[view];
+  var sn=SNACK[DW];
   h+='<div class="c"><h2>🍽️ How the day eats now</h2>'+
    '<div class="r"><i></i><div><b>Brunch</b> — morning meal and lunch as one. Make it the biggest thing you eat.</div></div>'+
    '<div class="r"><i></i><div><b>Evening snack</b> — real, not a holdover. It is what stops dinner becoming a second lunch.</div></div>'+
@@ -484,7 +525,7 @@ function render(){
    '<div class="r"><i></i><div><b>Protein powder</b> — once daily. On three meals instead of five it is carrying more than it looks.</div></div>'+
    '<div class="tip"><b class="h">Fewer meals, same target</b>Three eating slots have to carry '+TIER[s.t][1]+' g of protein today. That only works if each one is protein-first — the salad and the veg are built around the paneer, not the other way round.</div></div>';
 
-  h+='<div class="c"><h2>🥣 Evening snack · '+FL[view]+'</h2><div class="sess"><div class="h">'+sn[0]+'</div>'+
+  h+='<div class="c"><h2>🥣 Evening snack · '+FL[DW]+'</h2><div class="sess"><div class="h">'+sn[0]+'</div>'+
    '<span style="color:var(--mut)">≈'+sn[1]+' g protein</span><div style="margin-top:7px;color:var(--mut);font-size:13.5px">'+sn[2]+'</div></div>'+
    '<div style="margin-top:13px"><div class="lbl">The rotation</div>'+
    [1,2,3,4,5,6,0].map(function(i){return '<div class="q"><span>'+SNACK[i][0]+'</span><em>'+DS[i]+' · '+SNACK[i][1]+'g</em></div>'}).join("")+'</div></div>';
@@ -497,14 +538,14 @@ function render(){
  }
 
  if(tab==="law"){
-  var ORD=[1,2,3,4,5,6,0], DL=["M","T","W","T","F","S","S"];
-  var jd=ORD.map(function(i){return !!(S[i]&&S[i].judgment)}), jn=jd.filter(Boolean).length;
+  var ORD=weekDates(view), DL=["M","T","W","T","F","S","S"];
+  var jd=ORD.map(function(d){return !!(S[d]&&S[d].judgment)}), jn=jd.filter(Boolean).length;
   var msg = jn===0 ? "Nothing read yet this week. Saturday will feel it."
           : jn<3   ? jn+" of 7 read. Prep has started."
           : jn<5   ? jn+" of 7 read. Prep is happening."
           : jn<7   ? jn+" of 7 read. You will walk into Saturday ready."
                    : "All seven read. Nothing left to do but argue.";
-  var WI=weekIdx(), WKX=WEEKS[WI], DN=["Mon","Tue","Wed","Thu","Fri"], tdd=new Date().getDay();
+  var WI=weekIdx(), WKX=WEEKS[WI], DN=["Mon","Tue","Wed","Thu","Fri"], tdd=DW;
   h+='<div class="c"><h2>📚 Week '+(WI+1)+' · what to read</h2>'+
    '<div class="sess" style="margin-bottom:13px"><div class="h">'+WKX.c+'</div>'+
    '<span style="color:var(--mut)">You argue for the '+WKX.s+' at the weekend.</span></div>'+
@@ -526,26 +567,7 @@ function render(){
    '<input placeholder="Which court, which matter?" value="'+(s.ct||"")+'" oninput="fl(\'ct\',this.value)">'+
    '<textarea rows="2" placeholder="One line — what the Bench did that you would copy, or avoid">'+(s.cn||"")+'</textarea></div>';
 
-  var YD=(view+6)%7, Y=S[YD]||{}, carried=[Y.t1,Y.t2,Y.t3].filter(function(x){return x&&x.trim()});
-  h+='<div class="c"><h2>💼 Work</h2>'+
-   '<div class="note">What actually moved today — matters drafted, filed, conferences, advices given. Use matter numbers rather than client names; it is more precise and it keeps privilege out of your backups.</div>'+
-   '<textarea rows="3" placeholder="e.g. CA 37/26 — drafted s.34 reply, 2h" oninput="fl(\'wkd\',this.value)">'+(s.wkd||"")+'</textarea>';
-
-  if(carried.length){
-   h+='<div style="margin-top:16px"><div class="lbl">Carried in from '+FL[YD]+'</div>'+
-    carried.map(function(x,ix){
-      var k="c"+(ix+1), on=s[k]?" on":"";
-      return '<div class="it'+on+'" onclick="tk(\''+k+'\')" style="min-height:38px;padding:6px 0">'+
-       '<div class="bx"></div><div class="lb" style="font-size:14.5px"><b>'+x+'</b></div></div>'}).join("")+
-    '</div>';
-  }
-
-  h+='<div style="margin-top:16px"><div class="lbl">Tomorrow — the three you are taking on</div>'+
-   [1,2,3].map(function(nn){
-     return '<div class="tk"><span class="tkn">'+nn+'</span>'+
-      '<input placeholder="'+(nn===1?"The one that must happen":nn===2?"The one you keep postponing":"The small one you will actually finish")+'" '+
-      'value="'+(s["t"+nn]||"").replace(/"/g,"&quot;")+'" oninput="fl(\'t'+nn+'\',this.value)"></div>'}).join("")+
-   '<div class="note" style="margin-top:10px">Three, not five. They appear tomorrow to tick off — and anything you do not carry forward is a decision, not an oversight.</div></div></div>';
+  h+=workCard(s);
 
   h+='<div class="c"><h2>📆 The week\'s shape</h2>'+
    '<div class="q"><span>Reading — statute, then prior authority</span><em>Mon–Thu 7 am</em></div>'+
@@ -558,10 +580,11 @@ function render(){
  }
 
  if(tab==="me"){
-  var done=0,tot=0;for(var i=0;i<7;i++){var o=S[i]||{};for(var k in o){if(o[k]===true)done++}}
+  var done=0;weekDates(view).forEach(function(d){var o=S[d]||{};for(var k in o){if(o[k]===true)done++}});
+  var totDays=Object.keys(S).length;
   h+='<div class="c"><h2>📈 This week</h2><div class="tot"><b>'+done+'</b> things ticked across the week</div>'+
    '<div class="bar"><div style="width:'+Math.min(100,Math.round(done/70*100))+'%"></div></div>'+
-   '<div class="note" style="margin-top:12px">Day chips at the top show each day\'s count. Tap a day to go back and fill it in.</div></div>';
+   '<div class="note" style="margin-top:12px">Day chips show each day of the week you are looking at — use \u2039 \u203a to move between weeks. <b>'+totDays+'</b> days recorded since you started; nothing is ever overwritten.</div></div>';
 
   h+='<div class="c"><h2>📏 Measurements</h2><div class="grid2">'+
    ['weight|Weight (kg)','waist|Waist (cm)','hips|Hips (cm)','thigh|Thigh (cm)'].map(function(x){
@@ -599,7 +622,8 @@ function tk(k){var s=st();s[k]=!s[k];render()}
 function pw(i){var s=st();s.w=(s.w===i+1)?i:i+1;render()}
 function fl(k,v){st()[k]=v;sv()}
 function mm(k,v){M[k]=v;sv()}
-function gd(i){view=i;render()}
+function gd(d){view=d;render()}
+function gw(n){view=addD(view,n*7);render()}
 function gt(t){tab=t;window.scrollTo(0,0);render()}
 function gt2(t){st().t=t;render()}
 function bk(){
